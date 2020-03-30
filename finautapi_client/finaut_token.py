@@ -7,6 +7,7 @@ SERVER = 'localhost:8000'
 PATH_TOKEN = '/o/token/'
 PATH_USERS = '/finautapi/v1/users/'
 PATH_GROUPS = '/finautapi/v1/groups/'
+PATH_COMPANIES = '/finautapi/v1/companies/'
 
 CLIENT_ID = 'dhMqAs7Dd892Q0kS0PnGOs7HvcvfTCbvMtNLM11Y'
 CLIENT_SECRET = 'BiQJHpaVvAgNtTZvzN19lpf6MnlpuOnhPtGsUl6UM4bDuKoetc4VpmzgUx00Vq1Dgp5NdOzsT4gI5CgneY0slO5oxrx8szrjD0OIaQLJ9J8OGyyNplUrQVtRPwT6tc0V'
@@ -40,19 +41,35 @@ def get_access_token(scope):
     return response.json()
 
 
-def get_users(token):
-    url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_USERS)
-    response = requests.request("GET", url, headers={
-        'Authorization': 'Bearer {}'.format(token),
-        'Content-Type': 'application/x-www-form-urlencoded',
-    }, data=urllib.urlencode(dict(
-        username='bjorn'
-    )))
-    return response.text.encode('u8')
+# def get_users(token):
+#     url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_USERS)
+#     response = requests.request("GET", url, headers={
+#         'Authorization': 'Bearer {}'.format(token),
+#         'Content-Type': 'application/x-www-form-urlencoded',
+#     }, data=urllib.urlencode(dict(
+#         username='bjorn'
+#     )))
+#     return response.text.encode('u8')
 
 
-def get_groups(token):
-    url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_GROUPS)
+# def get_groups(token):
+#     url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_GROUPS)
+#     response = requests.request("GET", url, headers={
+#         'Authorization': 'Bearer {}'.format(token)
+#     })
+#     return response.text.encode('u8')
+
+
+# def xget_companies(token):
+#     url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_COMPANIES)
+#     response = requests.request("GET", url, headers={
+#         'Authorization': 'Bearer {}'.format(token)
+#     })
+#     return response.text.encode('u8')
+
+
+def get_companies(token):
+    url = "http://localhost:8000/finautapi/v1/companies/"
     response = requests.request("GET", url, headers={
         'Authorization': 'Bearer {}'.format(token)
     })
@@ -60,9 +77,12 @@ def get_groups(token):
 
 
 
+
 if __name__ == "__main__":
     import json
-    t = get_access_token('users')
-    print(json.dumps(t, indent=4))
+    # print(get_access_token("read"))
+    print(get_companies('MZ0xb643NWVichCUSIjOIk99SsdpiW'))
 
-    print(get_groups(t['access_token']))
+    # t = get_access_token('users')
+    # print(json.dumps(t, indent=4))
+    # print(get_groups(t['access_token']))
