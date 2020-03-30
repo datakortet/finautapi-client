@@ -4,6 +4,8 @@ import requests
 
 PROTOCOL = 'http'
 SERVER = 'localhost:8000'
+FINAUTAPI = "{}://{}/finautapi/v1/".format(PROTOCOL, SERVER)
+
 PATH_TOKEN = '/o/token/'
 PATH_USERS = '/finautapi/v1/users/'
 PATH_GROUPS = '/finautapi/v1/groups/'
@@ -29,7 +31,7 @@ def get_access_token(scope):
             }
 
     """
-    url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_TOKEN)
+    url = FINAUTAPI + 'token/'
     payload = urllib.urlencode(dict(
         grant_type='client_credentials',
         client_id=CLIENT_ID,
@@ -41,35 +43,45 @@ def get_access_token(scope):
     return response.json()
 
 
-# def get_users(token):
-#     url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_USERS)
-#     response = requests.request("GET", url, headers={
-#         'Authorization': 'Bearer {}'.format(token),
-#         'Content-Type': 'application/x-www-form-urlencoded',
-#     }, data=urllib.urlencode(dict(
-#         username='bjorn'
-#     )))
-#     return response.text.encode('u8')
+def get_users(token):
+    url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_USERS)
+    response = requests.request("GET", url, headers={
+        'Authorization': 'Bearer {}'.format(token),
+        'Content-Type': 'application/x-www-form-urlencoded',
+    }, data=urllib.urlencode(dict(
+        username='bjorn'
+    )))
+    return response.text.encode('u8')
 
 
-# def get_groups(token):
-#     url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_GROUPS)
-#     response = requests.request("GET", url, headers={
-#         'Authorization': 'Bearer {}'.format(token)
-#     })
-#     return response.text.encode('u8')
+def get_groups(token):
+    url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_GROUPS)
+    response = requests.request("GET", url, headers={
+        'Authorization': 'Bearer {}'.format(token)
+    })
+    return response.text.encode('u8')
 
 
-# def xget_companies(token):
-#     url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_COMPANIES)
-#     response = requests.request("GET", url, headers={
-#         'Authorization': 'Bearer {}'.format(token)
-#     })
-#     return response.text.encode('u8')
+def xget_companies(token):
+    url = FINAUTAPI + "comps/"
+    response = requests.request("GET", url, headers={
+        'Authorization': 'Bearer {}'.format(token)
+    })
+    return response.text.encode('u8')
 
 
 def get_companies(token):
-    url = "http://localhost:8000/finautapi/v1/companies/"
+    url = FINAUTAPI + "companies/"
+    response = requests.request("GET", url, headers={
+        'Authorization': 'Bearer {}'.format(token)
+    })
+    return response.text.encode('u8')
+
+
+def get_ordninger(token):
+    url = "http://localhost:8000/finautapi/v1/ordlist/"
+    url = "http://localhost:8000/finautapi/v1/ordninger/"
+    print("URL:", url)
     response = requests.request("GET", url, headers={
         'Authorization': 'Bearer {}'.format(token)
     })
@@ -77,11 +89,13 @@ def get_companies(token):
 
 
 
-
 if __name__ == "__main__":
     import json
-    # print(get_access_token("read"))
-    print(get_companies('MZ0xb643NWVichCUSIjOIk99SsdpiW'))
+    t = get_access_token("company read write")
+    access_token = t['access_token']
+    print()
+    t = get_ordninger(access_token)
+    print(json.dumps(json.loads(t), indent=4))
 
     # t = get_access_token('users')
     # print(json.dumps(t, indent=4))
