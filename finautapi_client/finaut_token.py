@@ -6,13 +6,8 @@ PROTOCOL = 'http'
 SERVER = 'localhost:8000'
 FINAUTAPI = "{}://{}/finautapi/v1/".format(PROTOCOL, SERVER)
 
-PATH_TOKEN = '/o/token/'
-PATH_USERS = '/finautapi/v1/users/'
-PATH_GROUPS = '/finautapi/v1/groups/'
-PATH_COMPANIES = '/finautapi/v1/companies/'
-
-CLIENT_ID = 'dhMqAs7Dd892Q0kS0PnGOs7HvcvfTCbvMtNLM11Y'
-CLIENT_SECRET = 'BiQJHpaVvAgNtTZvzN19lpf6MnlpuOnhPtGsUl6UM4bDuKoetc4VpmzgUx00Vq1Dgp5NdOzsT4gI5CgneY0slO5oxrx8szrjD0OIaQLJ9J8OGyyNplUrQVtRPwT6tc0V'
+CLIENT_ID = 'xsojCstayZtM1VFx2zZd3Nq8JdsNXhP091A2GTKe'
+CLIENT_SECRET = 'nRo351z8wiTWbDSscXCdfItEBiSEZunkyjQ5Q6AotA5pl2Zqv6ggoQNtIlot9yZItT7gzD2BxjlaqCpMHXSsUoWRr618ZvuUjC0PWb9bQVHNkVgyXTuj112iOf3x1S5s'
 
 HEADERS = {
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -44,7 +39,7 @@ def get_access_token(scope):
 
 
 def get_users(token):
-    url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_USERS)
+    url = FINAUTAPI + "user/"
     response = requests.request("GET", url, headers={
         'Authorization': 'Bearer {}'.format(token),
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -55,7 +50,7 @@ def get_users(token):
 
 
 def get_groups(token):
-    url = "{}://{}{}".format(PROTOCOL, SERVER, PATH_GROUPS)
+    url = FINAUTAPI + "groups/"
     response = requests.request("GET", url, headers={
         'Authorization': 'Bearer {}'.format(token)
     })
@@ -79,9 +74,36 @@ def get_companies(token):
 
 
 def get_ordninger(token):
-    url = "http://localhost:8000/finautapi/v1/ordlist/"
-    url = "http://localhost:8000/finautapi/v1/ordninger/"
+    url = FINAUTAPI + "ordninger/"
     print("URL:", url)
+    response = requests.request("GET", url, headers={
+        'Authorization': 'Bearer {}'.format(token)
+    })
+    print(response.status_code)
+    return response.text.encode('u8')
+
+
+def get_ordlist(token):
+    url = FINAUTAPI + "ordlist/"
+    print("URL:", url)
+    response = requests.request("GET", url, headers={
+        'Authorization': 'Bearer {}'.format(token)
+    })
+    return response.text.encode('u8')
+
+
+def get_index(token):
+    url = FINAUTAPI
+    response = requests.request("GET", url, headers={
+        'Authorization': 'Bearer {}'.format(token)
+    })
+    return response.text.encode('u8')
+
+
+
+
+def get_secret(token):
+    url = FINAUTAPI + 'secret/'
     response = requests.request("GET", url, headers={
         'Authorization': 'Bearer {}'.format(token)
     })
@@ -91,12 +113,24 @@ def get_ordninger(token):
 
 if __name__ == "__main__":
     import json
-    t = get_access_token("company read write")
+
+
+
+    t = get_access_token("read")
     access_token = t['access_token']
     print()
-    t = get_ordninger(access_token)
+    
+    print(get_index(access_token))
+    print(get_secret(access_token))
+    print(json.dumps(json.loads(get_users(access_token)), indent=4))
+    import sys
+    sys.exit()
+
+
+    # t = get_ordninger(access_token)
+    t = get_companies(access_token)
     print(json.dumps(json.loads(t), indent=4))
 
-    # t = get_access_token('users')
-    # print(json.dumps(t, indent=4))
-    # print(get_groups(t['access_token']))
+    # t = get_ordlist(access_token)
+    t = get_ordninger(access_token)
+    print(json.dumps(json.loads(t), indent=4))
